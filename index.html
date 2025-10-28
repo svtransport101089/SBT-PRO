@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SBT Transport Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0"
+  }
+}
+</script>
+<style>
+    @media print {
+      /* --- General Print Setup --- */
+      @page {
+        size: A4 portrait;
+        margin: 1cm;
+      }
+
+      body {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        background-color: #fff !important;
+      }
+
+      /* Hide UI elements not part of the content */
+      body > #root > div > div:first-child, /* Sidebar */
+      body > #root > div > div > header, /* Header */
+      .print-hide {
+        display: none !important;
+      }
+      
+      /* Reset layout for printing */
+      main, .container, #root, body {
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: visible !important;
+        width: auto !important;
+      }
+
+      .container {
+        max-width: 100% !important;
+      }
+
+      /* --- Invoice (A4 Portrait) Specific Styles --- */
+      .invoice-print-container .bg-white {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        font-size: 11pt; /* Readable font size for A4 */
+        color: #000;
+      }
+      .invoice-print-container img {
+        height: 25mm !important; /* Larger logo for A4 */
+        width: auto !important;
+      }
+      .invoice-print-container h1, 
+      .invoice-print-container h2 {
+        font-size: 16pt !important;
+        color: #000 !important;
+      }
+      .invoice-print-container h3,
+      .invoice-print-container h5,
+      .invoice-print-container strong {
+        font-size: 12pt !important;
+        color: #000 !important;
+      }
+      .invoice-print-container p {
+         font-size: 11pt !important;
+         color: #000 !important;
+      }
+      .invoice-print-container table {
+         width: 100%;
+      }
+      .invoice-print-container thead {
+         background-color: #e2e8f0 !important; /* Lighter gray for printing */
+      }
+
+
+      /* --- Memo (A5 Landscape content on A4 Portrait page) Specific Styles --- */
+      .memo-print-container form > .bg-white {
+        box-shadow: none !important;
+        border: none !important;
+        padding: 0 !important;
+        font-size: 9px; /* Keep memo font small */
+      }
+      .memo-print-container img {
+        height: 20mm !important;
+        width: auto !important;
+      }
+      .memo-print-container h1 {
+        font-size: 14px !important;
+      }
+
+      /* Make inputs look like static text for Memo */
+      .memo-print-container input,
+      .memo-print-container textarea,
+      .memo-print-container input[readonly],
+      .memo-print-container input[type="date"],
+      .memo-print-container input[type="time"],
+      .memo-print-container input[type="number"] {
+        border: none !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        padding: 1px !important;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        color: #000 !important;
+        font-size: 9px !important;
+      }
+
+      /* Hide the search button inside the combo box on memo form*/
+      .memo-print-container .relative button {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+  <body class="bg-gray-100">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
