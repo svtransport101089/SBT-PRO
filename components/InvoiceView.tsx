@@ -48,6 +48,10 @@ const InvoiceView: React.FC<InvoiceViewProps> = ({ invoiceId, onBack }) => {
         fetchData();
     }, [invoiceId, addToast, onBack]);
 
+    const handleDownload = () => {
+        window.print();
+    };
+
     if (isLoading) {
         return <div className="flex justify-center items-center h-64"><Spinner /></div>;
     }
@@ -55,10 +59,12 @@ const InvoiceView: React.FC<InvoiceViewProps> = ({ invoiceId, onBack }) => {
     if (!invoice) {
         return <div className="text-center py-10">Invoice data could not be loaded.</div>;
     }
+    
+    const emptyRowCount = Math.max(0, 10 - memos.length);
 
     return (
         <div className="invoice-print-container">
-            <div className="bg-white p-4 shadow-lg rounded-lg border border-gray-300">
+            <div className="bg-white p-4 shadow-lg rounded-lg border border-gray-300 flex flex-col">
                 {/* Header */}
                 <div className="flex justify-between items-start border border-gray-400 p-2">
                     <div className="flex items-center">
@@ -85,7 +91,7 @@ const InvoiceView: React.FC<InvoiceViewProps> = ({ invoiceId, onBack }) => {
                 </div>
 
                 {/* Memos Table */}
-                <div className="border border-t-0 border-gray-400">
+                <div className="border border-t-0 border-gray-400 flex-grow">
                      <table className="min-w-full text-sm">
                         <thead className="bg-green-200 font-bold text-center text-xs">
                             <tr>
@@ -116,6 +122,20 @@ const InvoiceView: React.FC<InvoiceViewProps> = ({ invoiceId, onBack }) => {
                                     <td className="p-1 text-right">{parseFloat(memo.trips_balance).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
                                 </tr>
                             ))}
+                            {Array.from({ length: emptyRowCount }).map((_, index) => (
+                                <tr key={`empty-${index}`} className="border-b border-gray-300">
+                                    <td className="p-1 border-r border-gray-400 h-6">&nbsp;</td>
+                                    <td className="p-1 border-r border-gray-400">&nbsp;</td>
+                                    <td className="p-1 border-r border-gray-400">&nbsp;</td>
+                                    <td className="p-1 border-r border-gray-400">&nbsp;</td>
+                                    <td className="p-1 border-r border-gray-400">&nbsp;</td>
+                                    <td className="p-1 border-r border-gray-400">&nbsp;</td>
+                                    <td className="p-1 border-r border-gray-400">&nbsp;</td>
+                                    <td className="p-1 border-r border-gray-400">&nbsp;</td>
+                                    <td className="p-1 border-r border-gray-400">&nbsp;</td>
+                                    <td className="p-1">&nbsp;</td>
+                                </tr>
+                            ))}
                         </tbody>
                         <tfoot>
                             <tr className="font-bold bg-gray-100">
@@ -144,7 +164,12 @@ const InvoiceView: React.FC<InvoiceViewProps> = ({ invoiceId, onBack }) => {
             </div>
             <div className="flex justify-end space-x-4 mt-6 print-hide">
                 <Button type="button" onClick={onBack} className="bg-gray-500 hover:bg-gray-600">Back</Button>
-                <Button type="button" onClick={() => window.print()} className="bg-green-600 hover:bg-green-700">Print Invoice</Button>
+                <Button type="button" onClick={handleDownload} className="bg-green-600 hover:bg-green-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 mr-2">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                    </svg>
+                    Download PDF
+                </Button>
             </div>
         </div>
     );
