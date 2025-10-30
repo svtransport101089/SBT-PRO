@@ -212,7 +212,30 @@ const MemoForm: React.FC<MemoFormProps> = ({ memoToLoad, onSaveSuccess, onCancel
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setMemoData(prev => ({ ...prev, [name]: value }));
+        
+        if (name === 'trips_km_rate') {
+            const kmRate = parseFloat(value) || 0;
+            setMemoData(prev => {
+                let newDriverBataRate = prev.trips_driver_bata_rate;
+                if (kmRate > 0) {
+                    newDriverBataRate = '500';
+                } else {
+                    const selectedService = services.find(service => service[3] === prev.products_item);
+                    if (selectedService) {
+                        newDriverBataRate = selectedService[9] || '0';
+                    } else {
+                        newDriverBataRate = '0';
+                    }
+                }
+                return {
+                    ...prev,
+                    [name]: value,
+                    trips_driver_bata_rate: newDriverBataRate,
+                };
+            });
+        } else {
+            setMemoData(prev => ({ ...prev, [name]: value }));
+        }
     };
 
     const handleCustomerNameChange = async (name: string) => {
@@ -257,25 +280,31 @@ const MemoForm: React.FC<MemoFormProps> = ({ memoToLoad, onSaveSuccess, onCancel
                 vehicleType, // 10
             ] = selectedService;
 
-            setMemoData(prev => ({
-                ...prev,
-                products_item: productItem,
-                trips_vehicle_type: vehicleType,
-                trips_minimum_hours1: minHours,
-                trips_minimum_charges1: minCharges,
-                trips_for_additional_hour_rate: addHourCharge,
-                trips_driver_bata_rate: driverBata || '0',
-            }));
+            setMemoData(prev => {
+                const kmRate = parseFloat(String(prev.trips_km_rate)) || 0;
+                return {
+                    ...prev,
+                    products_item: productItem,
+                    trips_vehicle_type: vehicleType,
+                    trips_minimum_hours1: minHours,
+                    trips_minimum_charges1: minCharges,
+                    trips_for_additional_hour_rate: addHourCharge,
+                    trips_driver_bata_rate: kmRate > 0 ? '500' : (driverBata || '0'),
+                }
+            });
         } else {
-             setMemoData(prev => ({
-                ...prev,
-                products_item: '',
-                trips_vehicle_type: '',
-                trips_minimum_hours1: '0',
-                trips_minimum_charges1: '0',
-                trips_for_additional_hour_rate: '0',
-                trips_driver_bata_rate: '0',
-            }));
+            setMemoData(prev => {
+                const kmRate = parseFloat(String(prev.trips_km_rate)) || 0;
+                return {
+                    ...prev,
+                    products_item: '',
+                    trips_vehicle_type: '',
+                    trips_minimum_hours1: '0',
+                    trips_minimum_charges1: '0',
+                    trips_for_additional_hour_rate: '0',
+                    trips_driver_bata_rate: kmRate > 0 ? '500' : '0',
+                }
+            });
         }
     };
 
@@ -465,7 +494,7 @@ const MemoForm: React.FC<MemoFormProps> = ({ memoToLoad, onSaveSuccess, onCancel
                         </div>
                          <div className="grid grid-cols-12 items-center border-b border-gray-400">
                             <div className="col-span-6 p-1 border-r border-gray-400"><MemoInput value="Driver Bata" readOnly/></div>
-                            <div className="col-span-1 p-1 border-r border-gray-400"><MemoInput name="trips_driver_bata_qty" type="number" value={memoData.trips_driver_bata_qty} readOnly/></div>
+                            <div className="col-span-1 p-1 border-r border-gray-400"><MemoInput name="trips_driver_bata_qty" type="number" value={memoData.trips_driver_bata_qty} /></div>
                             <div className="col-span-2 p-1 border-r border-gray-400"><MemoInput name="trips_driver_bata_rate" type="number" value={memoData.trips_driver_bata_rate} onChange={handleChange}/></div>
                             <div className="col-span-3 p-1"><MemoInput name="trips_driver_bata_amt" value={memoData.trips_driver_bata_amt} readOnly/></div>
                         </div>
